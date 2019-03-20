@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --environment=token --output-path=tokenized",
+    "build:dev": "ng build --environment=dev --output-path=dev",
+    "build:test": "ng build --environment=test --output-path=test",
+    "build:prod": "ng build --environment=prod --output-path=prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
