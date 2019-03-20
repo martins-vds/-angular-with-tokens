@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --configuration=tokenized --output-path=tokenized",
+    "build": "ng build",
     "build:dev": "ng build --configuration=dev --output-path=dev",
     "build:test": "ng build --configuration=test --output-path=test",
     "build:prod": "ng build --configuration=production --output-path=prod",
