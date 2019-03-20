@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   name: 'default',
-  apiEndpoint: '__apiEndpoint__',
-  apiClientId: '__apiClientId__',
-  apiClientSecret: '__apiClientSecret__'
+  apiEndpoint: '_#_apiEndpoint_#_',
+  apiClientId: '_#_apiClientId_#_',
+  apiClientSecret: '_#_apiClientSecret_#_'
 };
