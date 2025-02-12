@@ -1,9 +1,11 @@
 name: $(date:yyyyMMdd)$(rev:.r)
+
+pool:
+    vmImage: ubuntu-latest
+
 jobs:
 - job: Job_1
-  displayName: Agent job 1
-  pool:
-    vmImage: ubuntu-latest
+  displayName: Agent job 1 
   steps:
   - checkout: self
   - task: Npm@1
@@ -27,7 +29,6 @@ jobs:
       CleanTargetFolder: true
       OverWrite: true
       flattenFolders: true  
-
   - publish: $(build.artifactstagingdirectory)\tokenizedapp
     displayName: 'Publish artifacts: tokenizedapp'
     artifact: tokenizedapp
@@ -38,4 +39,18 @@ jobs:
     vmImage: ubuntu-latest
   steps:
   - download: current
-    artifact: tokenizedapp
+    artifact: tokenizedapp  
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+    inputs:
+      root: '$(Pipeline.Workspace)/tokenizedapp'
+      sources: '**/main*.js'
+      addBOM: true
+      escape: 'off'
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'Visual Studio Enterprise(21881e13-25a3-400f-90c8-e9ae18cf70aa)'
+      appType: 'webAppLinux'
+      WebAppName: 'app-fr7cc4pwof6ti'
+      packageForLinux: '$(Pipeline.Workspace)/tokenizedapp'
+      RuntimeStack: 'NODE|10.14'
