@@ -4,17 +4,17 @@ pool:
     vmImage: ubuntu-latest
 
 jobs:
-- job: Job_1
-  displayName: Agent job 1 
+- job: build
+  displayName: Build Generic Artifact 
   steps:
   - checkout: self
   - task: Npm@1
-    displayName: npm install
+    displayName: Install Packages
     inputs:
       workingDir: ui/helloworld
       verbose: false
   - task: Npm@1
-    displayName: npm build
+    displayName: Build App
     inputs:
       command: custom
       workingDir: ui/helloworld
@@ -34,7 +34,13 @@ jobs:
     artifact: tokenizedapp
 
 - job: deploy_dev
-  displayName: Agent job 1
+  displayName: Deploy to Dev
+  variables:
+    serviceConnectionName: 'my-service-connection-dev'
+    webAppName: 'my-web-app-dev'
+    apiClientId: '<API_CLIENT_ID_DEV>'
+    apiClientSecret: '<API_CLIENT_SECRET_DEV>'
+    apiEndpoint: '<API_ENDPOINT_DEV>'
   pool:
     vmImage: ubuntu-latest
   steps:
@@ -49,8 +55,8 @@ jobs:
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
-      azureSubscription: 'Visual Studio Enterprise(21881e13-25a3-400f-90c8-e9ae18cf70aa)'
+      azureSubscription: $(serviceConnectionName)
       appType: 'webAppLinux'
-      WebAppName: 'app-fr7cc4pwof6ti'
+      WebAppName: $(webAppName)
       packageForLinux: '$(Pipeline.Workspace)/tokenizedapp'
       RuntimeStack: 'NODE|10.14'
