@@ -45,14 +45,17 @@ jobs:
     vmImage: ubuntu-latest
   steps:
   - download: current
+    displayName: Download Generic Artifact
     artifact: tokenizedapp  
   - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+    displayName: 'Replace Tokens'
     inputs:
       root: '$(Pipeline.Workspace)/tokenizedapp'
       sources: '**/main*.js'
       addBOM: true
       escape: 'off'      
   - task: AzureRmWebAppDeployment@4
+    displayName: Deploy WebApp
     inputs:
       ConnectionType: 'AzureRM'
       azureSubscription: 'my-service-connection-dev'
