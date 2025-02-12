@@ -3,7 +3,7 @@ jobs:
 - job: Job_1
   displayName: Agent job 1
   pool:
-    name: Hosted Windows Container
+    vmImage: ubuntu-latest
   steps:
   - checkout: self
   - task: Npm@1
@@ -33,4 +33,4 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)\tokenizedapp
       ArtifactName: tokenizedapp
       TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
-...
+
