@@ -34,6 +34,7 @@ jobs:
     artifact: tokenizedapp
 
 - job: deploy_dev
+  dependsOn: [build]
   displayName: Deploy to Dev
   variables:
     webAppName: 'my-web-app-dev'
