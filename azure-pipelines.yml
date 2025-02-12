@@ -26,11 +26,16 @@ jobs:
       TargetFolder: $(build.artifactstagingdirectory)\tokenizedapp
       CleanTargetFolder: true
       OverWrite: true
-      flattenFolders: true
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish artifacts: drop'
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)\tokenizedapp
-      ArtifactName: tokenizedapp
-      TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
+      flattenFolders: true  
 
+  - publish: $(build.artifactstagingdirectory)\tokenizedapp
+    displayName: 'Publish artifacts: tokenizedapp'
+    artifact: tokenizedapp
+
+- job: deploy_dev
+  displayName: Agent job 1
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - download: current
+    artifact: tokenizedapp
