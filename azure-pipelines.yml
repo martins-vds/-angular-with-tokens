@@ -36,7 +36,6 @@ jobs:
 - job: deploy_dev
   displayName: Deploy to Dev
   variables:
-    serviceConnectionName: 'my-service-connection-dev'
     webAppName: 'my-web-app-dev'
     apiClientId: '<API_CLIENT_ID_DEV>'
     apiClientSecret: '<API_CLIENT_SECRET_DEV>'
@@ -51,12 +50,12 @@ jobs:
       root: '$(Pipeline.Workspace)/tokenizedapp'
       sources: '**/main*.js'
       addBOM: true
-      escape: 'off'
+      escape: 'off'      
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
-      azureSubscription: $(serviceConnectionName)
+      azureSubscription: 'my-service-connection-dev'
       appType: 'webAppLinux'
-      WebAppName: $(webAppName)
+      WebAppName: '$(webAppName)'
       packageForLinux: '$(Pipeline.Workspace)/tokenizedapp'
       RuntimeStack: 'NODE|10.14'
