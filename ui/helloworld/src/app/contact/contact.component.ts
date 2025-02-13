@@ -1,31 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  imports: [ReactiveFormsModule]
 })
-export class ContactComponent implements OnInit {
-
-  messageForm: FormGroup;
+export class ContactComponent {
+  private formBuilder = inject(FormBuilder);
+  public messageForm = this.formBuilder.group({
+    name: ['', Validators.required],
+    message: ['', Validators.required]
+  });
   submitted = false;
   success = false;
 
-  constructor(private formBuilder: FormBuilder) { }
-
-  ngOnInit() {
-    this.messageForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      message: ['', Validators.required]
-    });
-  }
-
-  onSubmit() {
+  public onSubmit(): void {
     this.submitted = true;
 
     if (this.messageForm.invalid) {
-        return;
+      return;
     }
 
     this.success = true;

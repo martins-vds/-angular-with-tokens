@@ -7,7 +7,7 @@ import { DataService } from '../data.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  users: object;
+  users: object | undefined;
 
   constructor(private data: DataService) { }
 
