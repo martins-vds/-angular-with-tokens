@@ -21,15 +21,15 @@ jobs:
       verbose: false
       customCommand: run build -- --prod --configuration=tokenized --output-path=tokenized
   - task: CopyFiles@2
-    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\tokenizedapp'
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/tokenizedapp'
     inputs:
       SourceFolder: $(system.defaultworkingdirectory)
-      Contents: '**\tokenized\**'
-      TargetFolder: $(build.artifactstagingdirectory)\tokenizedapp
+      Contents: '**/tokenized/**'
+      TargetFolder: $(build.artifactstagingdirectory)/tokenizedapp
       CleanTargetFolder: true
       OverWrite: true
       flattenFolders: true  
-  - publish: $(build.artifactstagingdirectory)\tokenizedapp
+  - publish: $(build.artifactstagingdirectory)/tokenizedapp
     displayName: 'Publish artifacts: tokenizedapp'
     artifact: tokenizedapp
 
