@@ -8,6 +8,11 @@ jobs:
   displayName: Build Generic Artifact 
   steps:
   - checkout: self
+  - task: NodeTool@0
+    displayName: Use Node 22
+    inputs:
+      versionSource: 'spec'
+      versionSpec: '22.x'
   - task: Npm@1
     displayName: Install Packages
     inputs:
