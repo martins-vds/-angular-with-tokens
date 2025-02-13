@@ -1,36 +1,65 @@
 name: $(date:yyyyMMdd)$(rev:.r)
+
+pool:
+    vmImage: ubuntu-latest
+
 jobs:
-- job: Job_1
-  displayName: Agent job 1
-  pool:
-    name: Hosted Windows Container
+- job: build
+  displayName: Build Generic Artifact 
   steps:
   - checkout: self
   - task: Npm@1
-    displayName: npm install
+    displayName: Install Packages
     inputs:
       workingDir: ui/helloworld
       verbose: false
   - task: Npm@1
-    displayName: npm build
+    displayName: Build App
     inputs:
       command: custom
       workingDir: ui/helloworld
       verbose: false
       customCommand: run build -- --prod --configuration=tokenized --output-path=tokenized
   - task: CopyFiles@2
-    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\tokenizedapp'
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/tokenizedapp'
     inputs:
       SourceFolder: $(system.defaultworkingdirectory)
-      Contents: '**\tokenized\**'
-      TargetFolder: $(build.artifactstagingdirectory)\tokenizedapp
+      Contents: '**/tokenized/**'
+      TargetFolder: $(build.artifactstagingdirectory)/tokenizedapp
       CleanTargetFolder: true
       OverWrite: true
-      flattenFolders: true
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish artifacts: drop'
+      flattenFolders: true  
+  - publish: $(build.artifactstagingdirectory)/tokenizedapp
+    displayName: 'Publish artifacts: tokenizedapp'
+    artifact: tokenizedapp
+
+- job: deploy_dev
+  dependsOn: [build]
+  displayName: Deploy to Dev
+  variables:
+    webAppName: 'my-web-app-dev'
+    apiClientId: '<API_CLIENT_ID_DEV>'
+    apiClientSecret: '<API_CLIENT_SECRET_DEV>'
+    apiEndpoint: '<API_ENDPOINT_DEV>'
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - download: current
+    displayName: Download Generic Artifact
+    artifact: tokenizedapp  
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+    displayName: 'Replace Tokens'
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)\tokenizedapp
-      ArtifactName: tokenizedapp
-      TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
-...
+      root: '$(Pipeline.Workspace)/tokenizedapp'
+      sources: '**/main*.js'
+      addBOM: true
+      escape: 'off'      
+  - task: AzureRmWebAppDeployment@4
+    displayName: Deploy WebApp
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'my-service-connection-dev'
+      appType: 'webAppLinux'
+      WebAppName: '$(webAppName)'
+      packageForLinux: '$(Pipeline.Workspace)/tokenizedapp'
+      RuntimeStack: 'NODE|10.14'
