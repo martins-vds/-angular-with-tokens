@@ -19,7 +19,7 @@ jobs:
       command: custom
       workingDir: ui/helloworld
       verbose: false
-      customCommand: run build -- --prod --configuration=tokenized --output-path=tokenized
+      customCommand: run build -- --configuration "production" --configuration=tokenized --output-path=tokenized
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)/tokenizedapp'
     inputs:
